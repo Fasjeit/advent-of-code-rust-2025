@@ -1,7 +1,8 @@
-1 - 2
+1 - 2.6
 
 1 - just code it
 2 - easy one with a twist
+2.6 - easy one with a twist or/and have to look for minor help.
 3 - ok, not a hard but takes some time
 3.8 - ok, but used some minor help or advise (algo to use, cache to implement, etc)
 4 - harder one, no help

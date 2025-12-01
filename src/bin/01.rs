@@ -40,35 +40,25 @@ impl Safe {
     }
 
     fn rotate_part1(&mut self, to: Rotation) -> bool {
-        match to {
-            Rotation::L(v) => self.dials -= v,
-            Rotation::R(v) => self.dials += v,
-        }
-
+        self.dials += to.value;
         self.dials %= 100;
 
         self.dials == 0
     }
 
     fn rotate_part2(&mut self, to: Rotation) -> u64 {
-        // calculate distance to zero in rotation direction + cicles count
+        // calculate distance to zero in rotation direction + cycles count
         // https://www.reddit.com/r/adventofcode/comments/1pb3y8p/comment/nro19r6
 
         // My initial idea with just div was crap
 
-        let (mut distance_to_zero, rotation_value) = match to {
-            Rotation::L(v) => {
-                let distance = self.dials;
-                self.dials -= v;
-                (distance, v)
-            }
-            Rotation::R(v) => {
-                let distance = (100 - self.dials) % 100;
-                self.dials += v;
-                (distance, v)
-            }
+        let mut distance_to_zero = if to.value < 0 {
+            self.dials
+        } else {
+            (100 - self.dials) % 100
         };
 
+        self.dials += to.value;
         self.dials = self.dials.rem_euclid(100);
 
         // if now on zero - distance to 0 is 100
@@ -76,10 +66,12 @@ impl Safe {
             distance_to_zero = 100;
         }
 
+        let rotation_delta = to.value.abs();
+
         // if Rotation pass 0
-        if rotation_value >= distance_to_zero {
-            // pass 0 once + number of circles
-            return (1 + (rotation_value - distance_to_zero).div(100))
+        if rotation_delta >= distance_to_zero {
+            // pass 0 once + number of cycles
+            return (1 + (rotation_delta - distance_to_zero).div(100))
                 .try_into()
                 .unwrap();
         }
@@ -89,9 +81,8 @@ impl Safe {
 }
 
 #[derive(Debug)]
-enum Rotation {
-    L(i32),
-    R(i32),
+struct Rotation {
+    value: i32,
 }
 
 #[derive(Debug)]
@@ -111,8 +102,8 @@ impl FromStr for Rotation {
             .map_err(ParseRotationError::InvalidNumber)?;
 
         match direction {
-            "L" => Ok(Rotation::L(value)),
-            "R" => Ok(Rotation::R(value)),
+            "L" => Ok(Rotation { value: -value }),
+            "R" => Ok(Rotation { value }),
             _ => Err(ParseRotationError::InvalidFormat),
         }
     }
