@@ -54,7 +54,6 @@ macro_rules! solution {
 
         fn main() {
             use $crate::template::runner::*;
-            //     // data/day_{0}/examples/example_1.txt
             let input = $crate::template::read_file_input("", DAY, "input.txt");
             $( run_part($func, &input, DAY, $part); )*
         }
