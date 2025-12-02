@@ -10,7 +10,7 @@ pub fn part_one(input: &str) -> Option<u64> {
         }
     });
 
-    Some(ranges.fold(0, |acc, x| acc + count_invalid(x, test_invalid)))
+    Some(ranges.fold(0, |acc, x| acc + count_invalid(x, test_invalid_part1_fast)))
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
@@ -23,7 +23,7 @@ pub fn part_two(input: &str) -> Option<u64> {
         }
     });
 
-    Some(ranges.fold(0, |acc, x| acc + count_invalid(x, test_invalid_part2)))
+    Some(ranges.fold(0, |acc, x| acc + count_invalid(x, test_invalid_part2_fast)))
 }
 
 fn count_invalid(range: Range, test_invalid: fn(u64) -> bool) -> u64 {
@@ -37,7 +37,8 @@ fn count_invalid(range: Range, test_invalid: fn(u64) -> bool) -> u64 {
     res
 }
 
-fn test_invalid(input: u64) -> bool {
+#[allow(dead_code)]
+fn test_invalid_part1(input: u64) -> bool {
     let digits = get_digits(input);
     if !digits.len().is_multiple_of(2) {
         return false;
@@ -52,6 +53,25 @@ fn test_invalid(input: u64) -> bool {
     true
 }
 
+fn test_invalid_part1_fast(input: u64) -> bool {
+    // see test_invalid_part2_fast for details
+    // only start-end patterns
+    match 1 + input.ilog10() {
+        1 => false,
+        2 => input.is_multiple_of(11),
+        3 => false,
+        4 => input.is_multiple_of(101),
+        5 => false,
+        6 => input.is_multiple_of(1001),
+        7 => false,
+        8 => input.is_multiple_of(10001),
+        9 => false,
+        10 => input.is_multiple_of(100001),
+        _ => panic!(),
+    }
+}
+
+#[allow(dead_code)]
 fn test_invalid_part2(input: u64) -> bool {
     let digits = get_digits(input);
 
@@ -85,6 +105,40 @@ fn test_invalid_part2(input: u64) -> bool {
     false
 }
 
+fn test_invalid_part2_fast(input: u64) -> bool {
+    // https://www.reddit.com/r/adventofcode/comments/1pc1ms7/comment/nruo03u/
+    // Clever idea just to check multiple of some numbers depending on length
+    // 11..11 is just the same number
+    //
+    // len n input gives all divisors of n as possible len patterns.
+    // len 1 pattern is also always some len n>1 pattern,
+    // so no need to include it explicitly if any other exists
+    //
+    // ex
+    // 12 × (0)10101 = 121212 (len 6)
+    // 13 × (0)10101 = 131131 (len 6)
+    // 11 × (0)10101 = 111111 (len 6, len 1 pattern included)
+    //
+    // 10 * 12 × (00)1001 = 120120 (len 6)
+    // 9 * 12 × (00)1001 = 108108 (len 6)
+    //
+    // 4 × 11 = 44 (len 2)
+
+    match 1 + input.ilog10() {
+        1 => false,
+        2 => input.is_multiple_of(11),
+        3 => input.is_multiple_of(111),
+        4 => input.is_multiple_of(101), // 0101
+        5 => input.is_multiple_of(11111),
+        6 => input.is_multiple_of(1001) || input.is_multiple_of(10101), // 001001 or 010101 (3 or 2 len patterns)
+        7 => input.is_multiple_of(1111111),
+        8 => input.is_multiple_of(1010101) || input.is_multiple_of(10001), // 01010101 or 00010001 (2 or 4 len patterns)
+        9 => input.is_multiple_of(1001001), // 001001001 (3 len patterns)
+        10 => input.is_multiple_of(101010101) || input.is_multiple_of(100001), // 0101010101 or 0000100001 (2 or 5 len patterns)
+        _ => panic!(),
+    }
+}
+
 fn get_digits(mut n: u64) -> Vec<u64> {
     if n == 0 {
         return vec![0];
@@ -108,25 +162,49 @@ mod tests {
 
     #[test]
     fn test_invalid1() {
-        let result = test_invalid(1212);
+        let result = test_invalid_part1(1212);
         assert!(result);
     }
 
     #[test]
     fn test_invalid2() {
-        let result = test_invalid(12012);
+        let result = test_invalid_part1(12012);
         assert!(!result);
     }
 
     #[test]
     fn test_invalid3() {
-        let result = test_invalid(124124);
+        let result = test_invalid_part1(124124);
         assert!(result);
     }
 
     #[test]
     fn test_invalid4() {
-        let result = test_invalid(1240124);
+        let result = test_invalid_part1(1240124);
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid1_fast() {
+        let result = test_invalid_part1_fast(1212);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid2_fast() {
+        let result = test_invalid_part1_fast(12012);
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid3_fast() {
+        let result = test_invalid_part1_fast(124124);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid4_fast() {
+        let result = test_invalid_part1_fast(1240124);
         assert!(!result);
     }
 
@@ -193,6 +271,72 @@ mod tests {
     #[test]
     fn test_invalid_part2_11() {
         let result = test_invalid_part2(1188511880);
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid_part2_1_fast() {
+        let result = test_invalid_part2_fast(1212);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid_part2_2_fast() {
+        let result = test_invalid_part2_fast(12012);
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid_part2_3_fast() {
+        let result = test_invalid_part2_fast(124124);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid_part2_4_fast() {
+        let result = test_invalid_part2_fast(1240124);
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid_part2_5_fast() {
+        let result = test_invalid_part2_fast(111);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid_part2_6_fast() {
+        let result = test_invalid_part2_fast(123123123);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid_part2_7_fast() {
+        let result = test_invalid_part2_fast(1212121212);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid_part2_8_fast() {
+        let result = test_invalid_part2_fast(100);
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid_part2_9_fast() {
+        let result = test_invalid_part2_fast(1011);
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid_part2_10_fast() {
+        let result = test_invalid_part2_fast(9999);
+        assert!(result);
+    }
+
+    #[test]
+    fn test_invalid_part2_11_fast() {
+        let result = test_invalid_part2_fast(1188511880);
         assert!(!result);
     }
 
