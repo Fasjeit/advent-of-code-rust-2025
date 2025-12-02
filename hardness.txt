@@ -1,4 +1,5 @@
 1 - 2.6
+2 - 2 (probably 1, but optimization is fun)
 
 1 - just code it
 2 - easy one with a twist
