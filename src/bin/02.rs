@@ -116,7 +116,7 @@ fn test_invalid_part2_fast(input: u64) -> bool {
     //
     // ex
     // 12 × (0)10101 = 121212 (len 6)
-    // 13 × (0)10101 = 131131 (len 6)
+    // 131 × (0)(0)1001 = 131131 (len 6)
     // 11 × (0)10101 = 111111 (len 6, len 1 pattern included)
     //
     // 10 * 12 × (00)1001 = 120120 (len 6)
@@ -206,6 +206,12 @@ mod tests {
     fn test_invalid4_fast() {
         let result = test_invalid_part1_fast(1240124);
         assert!(!result);
+    }
+
+    #[test]
+    fn test_invalid5_fast() {
+        let result = test_invalid_part1_fast(131131);
+        assert!(result);
     }
 
     #[test]
