@@ -402,6 +402,20 @@ impl<T> std::ops::IndexMut<usize> for Matrix<T> {
     }
 }
 
+impl<T> std::ops::Index<Index> for Matrix<T> {
+    type Output = T;
+
+    fn index(&self, index: Index) -> &T {
+        &self[index.y][index.x]
+    }
+}
+
+impl<T> std::ops::IndexMut<Index> for Matrix<T> {
+    fn index_mut(&mut self, index: Index) -> &mut T {
+        &mut self[index.y][index.x]
+    }
+}
+
 #[allow(dead_code)]
 pub fn parse_row_input_as_data_array_matrix<T>(input: &str) -> (Vec<T>, Size)
 where
