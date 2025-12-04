@@ -123,31 +123,35 @@ fn get_neighbouring_rolls(index: Index, map: &Matrix<MapCell>) -> Vec<Index> {
             result.push(uld_index);
         }
     }
-    if let Some(down_index) = index.down(Some(&map)) {
-        if map[down_index].has_roll && get_neighbors_count(down_index, &map) < 4 {
+    if let Some(down_index) = index.down(Some(map)) {
+        if map[down_index].has_roll && get_neighbors_count(down_index, map) < 4 {
             result.push(down_index);
         }
 
-        if let Some(drd_index) = down_index.right::<MapCell>(Some(&map)) {
-            if map[drd_index].has_roll && get_neighbors_count(drd_index, &map) < 4 {
-                result.push(drd_index);
-            }
+        if let Some(drd_index) = down_index.right::<MapCell>(Some(map))
+            && map[drd_index].has_roll
+            && get_neighbors_count(drd_index, map) < 4
+        {
+            result.push(drd_index);
         }
-        if let Some(dld_index) = down_index.left::<MapCell>(Some(&map)) {
-            if map[dld_index].has_roll && get_neighbors_count(dld_index, &map) < 4 {
-                result.push(dld_index);
-            }
-        }
-    }
-    if let Some(right_index) = index.right(Some(&map)) {
-        if map[right_index].has_roll && get_neighbors_count(right_index, &map) < 4 {
-            result.push(right_index);
+        if let Some(dld_index) = down_index.left::<MapCell>(Some(map))
+            && map[dld_index].has_roll
+            && get_neighbors_count(dld_index, map) < 4
+        {
+            result.push(dld_index);
         }
     }
-    if let Some(left_index) = index.left(Some(&map)) {
-        if map[left_index].has_roll && get_neighbors_count(left_index, &map) < 4 {
-            result.push(left_index);
-        }
+    if let Some(right_index) = index.right(Some(map))
+        && map[right_index].has_roll
+        && get_neighbors_count(right_index, map) < 4
+    {
+        result.push(right_index);
+    }
+    if let Some(left_index) = index.left(Some(map))
+        && map[left_index].has_roll
+        && get_neighbors_count(left_index, map) < 4
+    {
+        result.push(left_index);
     }
 
     result
@@ -156,48 +160,48 @@ fn get_neighbouring_rolls(index: Index, map: &Matrix<MapCell>) -> Vec<Index> {
 fn get_neighbors_count(index: Index, map: &Matrix<MapCell>) -> u64 {
     let mut roll_neighbors = 0;
 
-    if let Some(up_index) = index.up(Some(&map)) {
+    if let Some(up_index) = index.up(Some(map)) {
         if map[up_index].has_roll {
             roll_neighbors += 1;
         }
 
-        if let Some(urd_index) = up_index.right::<MapCell>(Some(&map)) {
-            if map[urd_index].has_roll {
-                roll_neighbors += 1;
-            }
+        if let Some(urd_index) = up_index.right::<MapCell>(Some(map))
+            && map[urd_index].has_roll
+        {
+            roll_neighbors += 1;
         }
 
-        if let Some(uld_index) = up_index.left::<MapCell>(Some(&map)) {
-            if map[uld_index].has_roll {
-                roll_neighbors += 1;
-            }
+        if let Some(uld_index) = up_index.left::<MapCell>(Some(map))
+            && map[uld_index].has_roll
+        {
+            roll_neighbors += 1;
         }
     }
-    if let Some(down_index) = index.down(Some(&map)) {
+    if let Some(down_index) = index.down(Some(map)) {
         if map[down_index].has_roll {
             roll_neighbors += 1;
         }
 
-        if let Some(drd_index) = down_index.right::<MapCell>(Some(&map)) {
-            if map[drd_index].has_roll {
-                roll_neighbors += 1;
-            }
+        if let Some(drd_index) = down_index.right::<MapCell>(Some(map))
+            && map[drd_index].has_roll
+        {
+            roll_neighbors += 1;
         }
-        if let Some(dld_index) = down_index.left::<MapCell>(Some(&map)) {
-            if map[dld_index].has_roll {
-                roll_neighbors += 1;
-            }
-        }
-    }
-    if let Some(right_index) = index.right(Some(&map)) {
-        if map[right_index].has_roll {
+        if let Some(dld_index) = down_index.left::<MapCell>(Some(map))
+            && map[dld_index].has_roll
+        {
             roll_neighbors += 1;
         }
     }
-    if let Some(left_index) = index.left(Some(&map)) {
-        if map[left_index].has_roll {
-            roll_neighbors += 1;
-        }
+    if let Some(right_index) = index.right(Some(map))
+        && map[right_index].has_roll
+    {
+        roll_neighbors += 1;
+    }
+    if let Some(left_index) = index.left(Some(map))
+        && map[left_index].has_roll
+    {
+        roll_neighbors += 1;
     }
 
     roll_neighbors
@@ -230,7 +234,7 @@ impl From<char> for MapCell {
 
 impl Display for MapCell {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut ch = '.';
+        let ch;
         if self.pickable {
             ch = 'x'
         } else if self.has_roll {
