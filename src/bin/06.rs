@@ -101,9 +101,9 @@ pub fn part_two(input: &str) -> Option<u64> {
     // step 2 - calc!
     let mut total_result = 0;
     let mut problem_offset = 0;
-    for problem in 0..width_list.len() {
+    for problem_width in width_list {
         let mut operands: Vec<u64> = vec![];
-        for x in (problem_offset..problem_offset + width_list[problem]).rev() {
+        for x in (problem_offset..problem_offset + problem_width).rev() {
             let mut operand: u64 = 0;
             for y in 0..matrix.size.y - 1 {
                 if matrix[y][x] == ' ' {
@@ -120,7 +120,7 @@ pub fn part_two(input: &str) -> Option<u64> {
             .parse()
             .unwrap();
         total_result += op.act(&operands);
-        problem_offset += width_list[problem] + 1;
+        problem_offset += problem_width + 1;
 
         //dbg!(&operands);
         //dbg!(&op);
