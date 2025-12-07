@@ -43,6 +43,51 @@ pub fn part_one(input: &str) -> Option<u64> {
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
+    part_two_single_traverse(input)
+}
+
+pub fn part_two_single_traverse(input: &str) -> Option<u64> {
+    // Just go from top to bottom, simulating beams.
+    // spitter adding its parent cost to both directions
+
+    let mut matrix: Matrix<MapCell> = Matrix::from_char_input(input.trim_ascii_end());
+
+    // Set source cost to 1
+    let (source_x_index, _) = matrix[0].iter().enumerate().find(|c| c.1.source).unwrap();
+    matrix[0][source_x_index].cost = 1;
+
+    for y in 1..matrix.size.y {
+        for x in 0..matrix.size.x {
+            if matrix[y - 1][x].has_beam || matrix[y - 1][x].source {
+                // beam incoming!
+                if matrix[y][x].splitter {
+                    if x >= 1 {
+                        matrix[y][x - 1].has_beam = true;
+                        matrix[y][x - 1].cost += matrix[y - 1][x].cost;
+                    }
+                    if x <= matrix.size.x - 2 {
+                        matrix[y][x + 1].has_beam = true;
+                        matrix[y][x + 1].cost += matrix[y - 1][x].cost;
+                    }
+                } else {
+                    matrix[y][x].has_beam = true;
+                    matrix[y][x].cost += matrix[y - 1][x].cost;
+                }
+            }
+        }
+    }
+
+    //matrix.print();
+
+    // result is just sum of costs at last level
+    let result = matrix[matrix.size.y - 1]
+        .iter()
+        .fold(0, |acc, b| acc + b.cost);
+
+    Some(result)
+}
+
+pub fn part_two_double_traverse(input: &str) -> Option<u64> {
     // Step 1 - top to bottom, simulation beams.
     // Step 2 - set beam cost at last layers to 1.
     //        - For each splitter s: Cost(s) = Cost(s_1) + Cost(s_2)
@@ -181,6 +226,16 @@ mod tests {
             "example_1.txt",
         ));
         assert_eq!(result, Some(21));
+    }
+
+    #[test]
+    fn test_part_two_double_traverse() {
+        let result = part_two_double_traverse(&advent_of_code::template::read_file_input(
+            "examples",
+            DAY,
+            "example_1.txt",
+        ));
+        assert_eq!(result, Some(40));
     }
 
     #[test]
