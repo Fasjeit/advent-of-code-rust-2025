@@ -4,6 +4,8 @@
 4 - 2 (probably 1, optimization)
 4 - 2
 5 - 3
+6 - 3
+7 - 2
 
 1 - just code it
 2 - easy one with a twist
