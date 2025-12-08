@@ -6,6 +6,7 @@
 5 - 3
 6 - 3
 7 - 2
+8 - 3 (spent too much time with useless kd-tree, so timing is like 4)
 
 1 - just code it
 2 - easy one with a twist
