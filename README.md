@@ -39,6 +39,12 @@ Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.
 
 ---
 
+## Useful primitives
+|           Day            |                Algo                 |
+| :----------------------: | :---------------------------------: |
+| [Day 8](./src/bin/08.rs) | `Union find aka DSU (merging sets)` |
+| [Day 9](./src/bin/09.rs) | `raycasting inside rectangle test`  |
+
 ## Template setup
 
 This template supports all major OS (macOS, Linux, Windows).
