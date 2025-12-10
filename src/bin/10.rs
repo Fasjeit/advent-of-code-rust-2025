@@ -56,12 +56,31 @@ fn bfs(
     target_state: &Vec<bool>,
     buttons: &Vec<Button>,
     visited: &mut HashMap<Vec<bool>, u64>,
-) {
+) -> Option<u64> {
+    // Check inputs
+    if initial_state.len() != target_state.len() {
+        return None;
+    }
+
+    // quick check: already at target
+    if initial_state == target_state {
+        visited.insert(initial_state.clone(), 0);
+        return Some(0);
+    }
+
     let mut to_visit = VecDeque::new();
-    to_visit.push_back((initial_state.to_vec(), 0_u64));
+    to_visit.push_back((initial_state.clone(), 0));
 
     while let Some((current_state, current_depth)) = to_visit.pop_front() {
-        visited.insert(current_state.to_vec(), current_depth);
+        // If we have already seen the state with better or same depth - skip it
+        if let Some(&prev_depth) = visited.get(&current_state)
+            && prev_depth <= current_depth
+        {
+            continue;
+        }
+
+        // No better sate - save this one
+        visited.insert(current_state.clone(), current_depth);
         let next_depth = current_depth + 1;
 
         //dbg!(&current_state);
@@ -71,28 +90,33 @@ fn bfs(
         for button in buttons {
             //dbg!(&button);
 
-            let mut next_state = current_state.to_vec();
-
-            button
-                .states_to_change
-                .iter()
-                .for_each(|s| next_state[*s] = !current_state[*s]);
+            // update the state to get next state
+            let mut next_state = current_state.clone();
+            for &idx in &button.states_to_change {
+                debug_assert!(idx < next_state.len(), "button index out of range");
+                next_state[idx] = !next_state[idx];
+            }
 
             //dbg!(&next_state);
 
-            if let Some(visited_depth) = visited.get(&next_state)
-                && *visited_depth <= next_depth
-            {
-                //dbg!("Already visited STATE with same of better depth");
-                continue;
-            } else if get_score(&next_state, target_state) != next_state.len() as u64 {
-                to_visit.push_back((next_state, next_depth));
-            } else {
-                // If already reached target state - no need to traverse further, just save
-                visited.insert(next_state.to_vec(), next_depth);
+            // If we reached the target, return immediately. This is the shortest depth (as we in BFS).
+            if next_state == *target_state {
+                visited.insert(next_state.clone(), next_depth);
+                return Some(next_depth);
             }
+
+            // If we've visited it at an equal or better depth, skip enqueueing next state
+            if let Some(&prev_depth) = visited.get(&next_state)
+                && prev_depth <= next_depth
+            {
+                continue;
+            }
+
+            to_visit.push_back((next_state, next_depth));
         }
     }
+
+    None
 }
 
 fn get_score(current_state: &Vec<bool>, target_state: &Vec<bool>) -> u64 {
