@@ -50,7 +50,7 @@ fn solve(input: &str, part_2: bool) -> Option<u64> {
 
     let paths = if !part_2 {
         let mut ways_map: HashMap<usize, u64> = HashMap::new();
-        count_paths(
+        count_paths_dfs(
             &index_map,
             &label_map,
             &connection_map,
@@ -60,7 +60,7 @@ fn solve(input: &str, part_2: bool) -> Option<u64> {
         )
     } else {
         let mut state_cache: HashMap<(usize, bool, bool), u64> = HashMap::new();
-        count_paths_part_2(
+        count_paths_dfs_part_2(
             &index_map,
             &label_map,
             &connection_map,
@@ -75,7 +75,7 @@ fn solve(input: &str, part_2: bool) -> Option<u64> {
     Some(paths)
 }
 
-fn count_paths(
+fn count_paths_dfs(
     index_map: &HashMap<usize, &str>,
     label_map: &HashMap<&str, usize>,
     connection_map: &HashMap<&str, Vec<&str>>,
@@ -98,7 +98,7 @@ fn count_paths(
     if let Some(neighbors) = connection_map.get(current_label) {
         for next_label in neighbors {
             let next_index = label_map.get(next_label).unwrap();
-            total += count_paths(
+            total += count_paths_dfs(
                 index_map,
                 label_map,
                 connection_map,
@@ -114,7 +114,7 @@ fn count_paths(
 }
 
 #[allow(clippy::too_many_arguments)]
-fn count_paths_part_2(
+fn count_paths_dfs_part_2(
     index_map: &HashMap<usize, &str>,
     label_map: &HashMap<&str, usize>,
     connection_map: &HashMap<&str, Vec<&str>>,
@@ -151,7 +151,7 @@ fn count_paths_part_2(
     if let Some(neighbors) = connection_map.get(current_label) {
         for next_label in neighbors {
             let next_index = label_map.get(next_label).unwrap();
-            let result = count_paths_part_2(
+            let result = count_paths_dfs_part_2(
                 index_map,
                 label_map,
                 connection_map,
@@ -170,68 +170,6 @@ fn count_paths_part_2(
     state_cache.insert(current_state, total);
     total
 }
-
-// fn Dijkstra(
-//     index_map: HashMap<usize, &str>,
-//     label_map: HashMap<&str, usize>,
-//     connection_map: &HashMap<&str, Vec<&str>>,
-//     cost_map: &mut HashMap<usize, u64>,
-//     ways_map: &mut HashMap<usize, u64>,
-//     to_visit_set: &mut BinaryHeap<Reverse<(u64, usize)>>,
-//     ending_position: Option<&usize>,
-// ) -> Option<(u64, u64)> {
-//     // returns (cost, number of shortest paths)
-//     let mut safe_counter = 100000;
-//     while let Some(Reverse((cost, index))) = to_visit_set.pop() {
-//         if safe_counter <= 0 {
-//             panic!("Safe counter stop.");
-//         }
-//         safe_counter -= 1;
-
-//         // Update cost for current cell
-//         cost_map
-//             .entry(index)
-//             .and_modify(|e| *e = cost)
-//             .or_insert(cost);
-
-//         // Update ways: if no ways yet, set to 1
-//         ways_map.entry(index).or_insert(1);
-
-//         if let Some(ending_position) = ending_position
-//             && index == *ending_position
-//         {
-//             return Some((cost, *ways_map.get(&index).unwrap()));
-//         }
-
-//         let current_label = index_map.get(&index).unwrap();
-//         let next_labels = connection_map.get(current_label).unwrap();
-
-//         for next_label in next_labels {
-//             let next_index = label_map.get(next_label).unwrap();
-//             let next_cost = cost + 1;
-
-//             match cost_map.get(next_index) {
-//                 Some(&existing_cost) if existing_cost < next_cost => {
-//                     // already have shorter path, do nothing
-//                 }
-//                 Some(&existing_cost) if existing_cost == next_cost => {
-//                     // found another shortest path → add ways
-//                     let ways = ways_map.get(&index).unwrap();
-//                     *ways_map.entry(*next_index).or_insert(0) += *ways;
-//                 }
-//                 _ => {
-//                     // first time reaching this node or shorter path found
-//                     cost_map.insert(*next_index, next_cost);
-//                     let ways = ways_map.get(&index).unwrap();
-//                     ways_map.insert(*next_index, *ways);
-//                     to_visit_set.push(Reverse((next_cost, *next_index)));
-//                 }
-//             }
-//         }
-//     }
-
-//     None
-// }
 
 #[cfg(test)]
 mod tests {
