@@ -44,10 +44,11 @@ Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.
 ---
 
 ## Useful primitives
-|           Day            |                Algo                 |
-| :----------------------: | :---------------------------------: |
-| [Day 8](./src/bin/08.rs) | `Union find aka DSU (merging sets)` |
-| [Day 9](./src/bin/09.rs) | `raycasting inside rectangle test`  |
+|            Day             |                          Algo                           |
+| :------------------------: | :-----------------------------------------------------: |
+|  [Day 8](./src/bin/08.rs)  |           `Union find aka DSU (merging sets)`           |
+|  [Day 9](./src/bin/09.rs)  |           `raycasting inside rectangle test`            |
+| [Day 11](./src/bin/011.rs) | `Get all possible paths in DFS (containing some nodes)` |
 
 ## Template setup
 
