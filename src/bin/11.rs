@@ -81,10 +81,10 @@ fn count_paths_dfs(
     connection_map: &HashMap<&str, Vec<&str>>,
     ways_map: &mut HashMap<usize, u64>,
     current_index: usize,
-    ending_position: usize,
+    end_index: usize,
 ) -> u64 {
     // If we reached the ending node
-    if current_index == ending_position {
+    if current_index == end_index {
         return 1;
     }
 
@@ -104,7 +104,7 @@ fn count_paths_dfs(
                 connection_map,
                 ways_map,
                 *next_index,
-                ending_position,
+                end_index,
             );
         }
     }
@@ -120,12 +120,12 @@ fn count_paths_dfs_part_2(
     connection_map: &HashMap<&str, Vec<&str>>,
     state_cache: &mut HashMap<(usize, bool, bool), u64>,
     current_index: usize,
-    ending_position: usize,
+    end_index: usize,
     visited_dac: bool,
     visited_fft: bool,
 ) -> u64 {
     // If we reached the ending node
-    if current_index == ending_position {
+    if current_index == end_index {
         //dbg!("1");
         //dbg!(visited_dac);
         //dbg!(visited_fft);
@@ -157,7 +157,7 @@ fn count_paths_dfs_part_2(
                 connection_map,
                 state_cache,
                 *next_index,
-                ending_position,
+                end_index,
                 visited_dac,
                 visited_fft,
             );
