@@ -26,7 +26,7 @@ fn solve(input: &str, part_2: bool) -> Option<u64> {
         index_map.insert(i, label);
         label_map.insert(label, i);
 
-        let mut connections: Vec<&str> = splitted_1.next().unwrap().split_whitespace().collect();
+        let connections: Vec<&str> = splitted_1.next().unwrap().split_whitespace().collect();
 
         connection_map.insert(label, connections);
     }
@@ -113,6 +113,7 @@ fn count_paths(
     total
 }
 
+#[allow(clippy::too_many_arguments)]
 fn count_paths_part_2(
     index_map: &HashMap<usize, &str>,
     label_map: &HashMap<&str, usize>,
