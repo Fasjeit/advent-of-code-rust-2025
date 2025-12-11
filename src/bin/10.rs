@@ -8,7 +8,7 @@ advent_of_code::solution!(10);
 pub fn part_one(input: &str) -> Option<u64> {
     let lines = input.trim_end().lines();
     let mut result = 0;
-    for (i, l) in lines.enumerate() {
+    for l in lines {
         let machine = Machine::from(l);
 
         let mut visited = HashMap::new();
@@ -377,7 +377,6 @@ impl From<&str> for Button {
                 ',' => continue,
                 ')' => break,
                 c => states_to_change.push(c.to_digit(10).unwrap() as usize),
-                _ => panic!(),
             }
         }
 
