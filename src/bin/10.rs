@@ -36,6 +36,8 @@ pub fn part_two(input: &str) -> Option<u64> {
     // https://gist.github.com/icub3d/16eea2a8b4a94d193a148fef908779a9
     // https://www.youtube.com/watch?v=xibCHVRF6oI
 
+    // Alternative to try later - https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
+
     let lines = input.trim_end().lines();
     let mut result = 0;
     for l in lines {

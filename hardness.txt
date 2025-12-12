@@ -10,6 +10,7 @@
 9 - 4.5 (knew nothing about raycasting, probably 4, but it was an office day) 
 10 - 5 (ILP strikes hard...)
 11 - 3.8 (actualy 3, but forgot about path tracing in dfs)
+12 - 2.6
 
 1 - just code it
 2 - easy one with a twist
